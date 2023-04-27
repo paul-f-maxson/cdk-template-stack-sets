@@ -6,6 +6,7 @@ import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
 import {
   BuildSpec,
+  LinuxBuildImage,
   Project,
   Source,
 } from "aws-cdk-lib/aws-codebuild";
@@ -84,6 +85,9 @@ function addPipeline(cdkScope: Construct) {
           },
         },
       }),
+      environment: {
+        buildImage: LinuxBuildImage.AMAZON_LINUX_2_4,
+      },
     }
   );
 
@@ -122,6 +126,9 @@ function addPipeline(cdkScope: Construct) {
         },
       },
     }),
+    environment: {
+      buildImage: LinuxBuildImage.AMAZON_LINUX_2_4,
+    },
   });
 
   const appArtifact = new Artifact("App");
