@@ -69,13 +69,12 @@ function addPipeline(cdkScope: Construct) {
     "PipelineProject",
     {
       source: pipelineSource,
-
       description:
         "Builds the aws cdk app comprising the pipeline itself",
       buildSpec: BuildSpec.fromObject({
         version: "0.2",
         phases: {
-          pre_build: {
+          install: {
             commands: ["yarn workspaces focus pipeline"],
           },
           build: {
@@ -115,7 +114,7 @@ function addPipeline(cdkScope: Construct) {
     buildSpec: BuildSpec.fromObject({
       version: "0.2",
       phases: {
-        pre_build: {
+        install: {
           commands: ["yarn workspaces focus app"],
         },
         build: {

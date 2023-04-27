@@ -3,9 +3,6 @@
   "packageManager": "yarn@3.5.0",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": ">=18.0.0 <19.0.0"
-  },
   "scripts": {
     "postinstall": "husky install",
     "tag-testing": "git tag --annotate --force --message 'move to $(git rev-parse --short HEAD)' testing",

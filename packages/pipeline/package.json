@@ -1,6 +1,9 @@
 {
   "name": "pipeline",
   "version": "0.1.0",
+  "engines": {
+    "node": ">=18.0.0 <19.0.0"
+  },
   "bin": "bin/pipeline.js",
   "scripts": {
     "build": "tsc",
