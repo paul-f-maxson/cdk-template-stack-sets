@@ -80,7 +80,22 @@ function addPipeline(cdkScope: Construct) {
           },
           build: {
             commands: [
-              "yarn workspace pipeline run cdk synthesize",
+              `yarn workspace pipeline run cdk synthesize ${
+                /**
+                 * Show debug logs
+                 * (specify multiple times to increase verbosity)
+                 */ ""
+              } --verbose --verbose ${
+                /**
+                 * Enable emission of additional debugging information,
+                 * such as creation stack traces of tokens
+                 */ ""
+              } --debug ${
+                /** Print trace for stack warnings */ ""
+              } --trace ${
+                /** Do not construct stacks with warnings */ ""
+              } --strict`,
+              ,
             ],
           },
         },
@@ -122,7 +137,23 @@ function addPipeline(cdkScope: Construct) {
           commands: ["yarn workspaces focus app"],
         },
         build: {
-          commands: ["yarn workspace app cdk synthesize"],
+          commands: [
+            `yarn workspace app run cdk synthesize ${
+              /**
+               * Show debug logs
+               * (specify multiple times to increase verbosity)
+               */ ""
+            } --verbose --verbose ${
+              /**
+               * Enable emission of additional debugging information,
+               * such as creation stack traces of tokens
+               */ ""
+            } --debug ${
+              /** Print trace for stack warnings */ ""
+            } --trace ${
+              /** Do not construct stacks with warnings */ ""
+            } --strict`,
+          ],
         },
       },
     }),
