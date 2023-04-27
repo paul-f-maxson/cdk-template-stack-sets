@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+
+require("dotenv").config();
+
 import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
 import {
@@ -18,9 +21,6 @@ import {
   StackSetTemplate,
 } from "aws-cdk-lib/aws-codepipeline-actions";
 import { Construct } from "constructs";
-import * as dotenv from "dotenv";
-
-dotenv.config();
 
 const app = new cdk.App();
 
