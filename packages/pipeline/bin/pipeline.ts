@@ -77,7 +77,13 @@ function addPipeline(cdkScope: Construct) {
         phases: {
           install: {
             "runtime-versions": { nodejs: "18.x" },
-            commands: ["yarn install"],
+            commands: [
+              "corepack enable",
+              "corepack prepare yarn@stable --activate",
+            ],
+          },
+          pre_build: {
+            commands: ["yarn workspaces focus pipeline"],
           },
           build: {
             commands: [
@@ -136,7 +142,13 @@ function addPipeline(cdkScope: Construct) {
       phases: {
         install: {
           "runtime-versions": { nodejs: "18.x" },
-          commands: ["yarn install"],
+          commands: [
+            "corepack enable",
+            "corepack prepare yarn@stable --activate",
+          ],
+        },
+        pre_build: {
+          commands: ["yarn workspaces focus app"],
         },
         build: {
           commands: [
