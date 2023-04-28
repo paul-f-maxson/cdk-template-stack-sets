@@ -76,7 +76,10 @@ function addPipeline(cdkScope: Construct) {
         version: "0.2",
         phases: {
           install: {
-            commands: ["yarn install"],
+            commands: [
+              "yarn set version stable",
+              "yarn install",
+            ],
           },
           build: {
             commands: [
@@ -134,7 +137,10 @@ function addPipeline(cdkScope: Construct) {
       version: "0.2",
       phases: {
         install: {
-          commands: ["yarn install"],
+          commands: [
+            "yarn set version stable",
+            "yarn install",
+          ],
         },
         build: {
           commands: [
