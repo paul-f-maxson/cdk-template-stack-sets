@@ -4,11 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "postinstall": "husky install",
-    "tag-staging": "git tag --annotate --force --message 'move to $(git rev-parse --short HEAD)' staging",
-    "push": "git push --follow-tags staging master",
-    "pull": "git pull --prune --tags origin master",
-    "stage": "yarn run tag-staging && git push --follow-tags staging master"
+    "postinstall": "husky install"
   },
   "workspaces": [
     "packages/*"

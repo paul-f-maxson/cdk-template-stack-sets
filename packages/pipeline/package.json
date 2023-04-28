@@ -9,7 +9,9 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "tag-staging": "git tag --annotate --force --message 'move to $(git rev-parse --short HEAD)' pipeline-staging",
+    "stage": "yarn run tag-staging && git push --follow-tags staging master"
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",
