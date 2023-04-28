@@ -5,25 +5,25 @@
   "type": "module",
   "scripts": {
     "postinstall": "husky install",
-    "tag-testing": "git tag --annotate --force --message 'move to $(git rev-parse --short HEAD)' testing",
-    "push": "git push --follow-tags origin master",
+    "tag-staging": "git tag --annotate --force --message 'move to $(git rev-parse --short HEAD)' staging",
+    "push": "git push --follow-tags staging master",
     "pull": "git pull --prune --tags origin master",
-    "stage": "yarn run tag-testing && yarn run push"
+    "stage": "yarn run tag-staging && git push --follow-tags staging master"
   },
   "workspaces": [
     "packages/*"
   ],
   "dependencies": {
-    "@eslint/js": "^8.38.0",
-    "@types/node": "^18.15.11",
-    "@typescript-eslint/eslint-plugin": "^5.58.0",
-    "@typescript-eslint/parser": "^5.58.0",
-    "aws-cdk": "^2.76.0",
-    "eslint": "^8.38.0",
+    "@eslint/js": "^8.39.0",
+    "@types/node": "^18.16.2",
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "@typescript-eslint/parser": "^5.59.1",
+    "aws-cdk": "^2.77.0",
+    "eslint": "^8.39.0",
     "eslint-config-prettier": "^8.8.0",
     "husky": "^8.0.3",
-    "lint-staged": "^13.2.1",
-    "prettier": "^2.8.7",
+    "lint-staged": "^13.2.2",
+    "prettier": "^2.8.8",
     "typescript": "^5.0.4",
     "typescript-eslint": "^0.0.1-alpha.0"
   },
