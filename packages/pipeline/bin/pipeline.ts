@@ -9,6 +9,7 @@ import {
   Cache,
   LinuxBuildImage,
   LocalCacheMode,
+  PipelineProject,
   Project,
   Source,
 } from "aws-cdk-lib/aws-codebuild";
@@ -62,16 +63,16 @@ function addPipeline(cdkScope: Construct) {
 
   //  Pipeline Stage
 
-  const pipelineSource = Source.codeCommit({
-    repository: sourceCodeRepo,
-    branchOrRef: "refs/tags/pipeline-staging",
-  });
+  // const pipelineSource = Source.codeCommit({
+  //   repository: sourceCodeRepo,
+  //   branchOrRef: "refs/tags/pipeline-staging",
+  // });
 
-  const buildPipeline = new Project(
+  const buildPipeline = new PipelineProject(
     cdkScope,
     "PipelineProject",
     {
-      source: pipelineSource,
+      // source: pipelineSource,
       description:
         "Builds the aws cdk app comprising the pipeline itself",
       buildSpec: BuildSpec.fromObject({
@@ -135,55 +136,59 @@ function addPipeline(cdkScope: Construct) {
 
   // App Stage
 
-  const appSource = Source.codeCommit({
-    repository: sourceCodeRepo,
-    branchOrRef: "refs/tags/app-staging",
-  });
+  // const appSource = Source.codeCommit({
+  //   repository: sourceCodeRepo,
+  //   branchOrRef: "refs/tags/app-staging",
+  // });
 
-  const buildApp = new Project(cdkScope, "AppProject", {
-    source: appSource,
-    description: "Builds the main cdk application",
-    buildSpec: BuildSpec.fromObject({
-      version: "0.2",
-      phases: {
-        install: {
-          "runtime-versions": { nodejs: "18.x" },
-          commands: [
-            "corepack enable",
-            "corepack prepare yarn@stable --activate",
-          ],
+  const buildApp = new PipelineProject(
+    cdkScope,
+    "AppProject",
+    {
+      // source: appSource,
+      description: "Builds the main cdk application",
+      buildSpec: BuildSpec.fromObject({
+        version: "0.2",
+        phases: {
+          install: {
+            "runtime-versions": { nodejs: "18.x" },
+            commands: [
+              "corepack enable",
+              "corepack prepare yarn@stable --activate",
+            ],
+          },
+          pre_build: {
+            commands: [
+              "yarn plugin import workspace-tools",
+              "yarn workspaces focus app",
+            ],
+          },
+          build: {
+            commands: [
+              `yarn workspace app run cdk synthesize ${
+                /**
+                 * Show debug logs
+                 * (specify multiple times to increase verbosity)
+                 */ ""
+              } --verbose --verbose ${
+                /**
+                 * Enable emission of additional debugging information,
+                 * such as creation stack traces of tokens
+                 */ ""
+              } --debug ${
+                /** Print trace for stack warnings */ ""
+              } --trace ${
+                /** Do not construct stacks with warnings */ ""
+              } --strict`,
+            ],
+          },
         },
-        pre_build: {
-          commands: [
-            "yarn plugin import workspace-tools",
-            "yarn workspaces focus app",
-          ],
-        },
-        build: {
-          commands: [
-            `yarn workspace app run cdk synthesize ${
-              /**
-               * Show debug logs
-               * (specify multiple times to increase verbosity)
-               */ ""
-            } --verbose --verbose ${
-              /**
-               * Enable emission of additional debugging information,
-               * such as creation stack traces of tokens
-               */ ""
-            } --debug ${
-              /** Print trace for stack warnings */ ""
-            } --trace ${
-              /** Do not construct stacks with warnings */ ""
-            } --strict`,
-          ],
-        },
+      }),
+      environment: {
+        buildImage: LinuxBuildImage.STANDARD_7_0,
       },
-    }),
-    environment: {
-      buildImage: LinuxBuildImage.STANDARD_7_0,
-    },
-  });
+    }
+  );
 
   const appArtifact = new Artifact("App");
 
