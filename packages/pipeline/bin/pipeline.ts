@@ -101,6 +101,9 @@ function addPipeline(cdkScope: Construct) {
           },
         },
       }),
+      environment: {
+        buildImage: LinuxBuildImage.STANDARD_7_0,
+      },
     }
   );
 
@@ -157,7 +160,7 @@ function addPipeline(cdkScope: Construct) {
       },
     }),
     environment: {
-      buildImage: LinuxBuildImage.AMAZON_LINUX_2_4,
+      buildImage: LinuxBuildImage.STANDARD_7_0,
     },
   });
 
