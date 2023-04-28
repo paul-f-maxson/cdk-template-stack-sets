@@ -5,10 +5,12 @@ require("dotenv").config();
 import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
 import {
+  Artifacts,
   BuildSpec,
   Cache,
   LinuxBuildImage,
   LocalCacheMode,
+  PipelineProject,
   Project,
   Source,
 } from "aws-cdk-lib/aws-codebuild";
@@ -24,6 +26,8 @@ import {
   StackSetTemplate,
 } from "aws-cdk-lib/aws-codepipeline-actions";
 import { Construct } from "constructs";
+import { ServicePrincipal } from "aws-cdk-lib/aws-iam";
+import { CodeBuildStep } from "aws-cdk-lib/pipelines";
 
 const app = new cdk.App();
 
@@ -43,7 +47,9 @@ function addPipeline(cdkScope: Construct) {
     { repositoryName: "SourceCode" }
   );
 
-  const pipeline = new Pipeline(cdkScope, "Pipeline");
+  const pipeline = new Pipeline(cdkScope, "Pipeline", {
+    crossAccountKeys: false,
+  });
 
   // Source Stage
 
@@ -74,6 +80,9 @@ function addPipeline(cdkScope: Construct) {
       source: pipelineSource,
       description:
         "Builds the aws cdk app comprising the pipeline itself",
+      artifacts: Artifacts.s3({
+        bucket: pipeline.artifactBucket,
+      }),
       buildSpec: BuildSpec.fromObject({
         version: "0.2",
         phases: {
@@ -107,6 +116,10 @@ function addPipeline(cdkScope: Construct) {
               ,
             ],
           },
+          artifacts: {
+            "base-directory": "packages/pipeline/cdk.out",
+            files: "**/*",
+          },
         },
       }),
       environment: {
@@ -130,6 +143,48 @@ function addPipeline(cdkScope: Construct) {
     ],
   });
 
+  // Update Pipeline Stage
+
+  const selfMutateProject = new PipelineProject(
+    cdkScope,
+    "SelfMutateProject",
+    {
+      buildSpec: BuildSpec.fromObject({
+        phases: {
+          install: {
+            "runtime-versions": { nodejs: "18.x" },
+            commands: [
+              "corepack enable",
+              "corepack prepare yarn@stable --activate",
+            ],
+          },
+          pre_build: {
+            commands: ["yarn workspaces focus pipeline"],
+          },
+          build: {
+            commands: [
+              "yarn workspace pipeline run cdk -a . deploy --require-approval=never --verbose",
+            ],
+          },
+        },
+      }),
+      environment: {
+        buildImage: LinuxBuildImage.STANDARD_7_0,
+      },
+    }
+  );
+
+  pipeline.addStage({
+    stageName: "UpdatePipeline",
+    actions: [
+      new CodeBuildAction({
+        actionName: "SelfMutate",
+        project: selfMutateProject,
+        input: pipelineArtifact,
+      }),
+    ],
+  });
+
   // App Stage
 
   const appSource = Source.codeCommit({
@@ -140,6 +195,9 @@ function addPipeline(cdkScope: Construct) {
   const buildApp = new Project(cdkScope, "AppProject", {
     source: appSource,
     description: "Builds the main cdk application",
+    artifacts: Artifacts.s3({
+      bucket: pipeline.artifactBucket,
+    }),
     buildSpec: BuildSpec.fromObject({
       version: "0.2",
       phases: {
@@ -173,6 +231,10 @@ function addPipeline(cdkScope: Construct) {
           ],
         },
       },
+      artifacts: {
+        "base-directory": "packages/app/cdk.out",
+        files: "**/*",
+      },
     }),
     environment: {
       buildImage: LinuxBuildImage.STANDARD_7_0,
@@ -202,7 +264,7 @@ function addPipeline(cdkScope: Construct) {
         stackSetName: "AppStackSet",
         actionName: "UpdateStackSet",
         template: StackSetTemplate.fromArtifactPath(
-          appArtifact.atPath("cdk.out/Stack.template.json")
+          appArtifact.atPath("Stack.template.json")
         ),
       }),
     ],
