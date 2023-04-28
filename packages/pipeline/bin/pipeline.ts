@@ -101,9 +101,6 @@ function addPipeline(cdkScope: Construct) {
           },
         },
       }),
-      environment: {
-        buildImage: LinuxBuildImage.AMAZON_LINUX_2_4,
-      },
     }
   );
 
