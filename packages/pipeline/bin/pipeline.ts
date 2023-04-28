@@ -76,7 +76,11 @@ function addPipeline(cdkScope: Construct) {
         version: "0.2",
         phases: {
           install: {
-            commands: ["yarn workspaces focus pipeline"],
+            commands: [
+              "yarn set version latest",
+              "yarn plugin import workspace-tools",
+              "yarn workspaces focus pipeline",
+            ],
           },
           build: {
             commands: [
@@ -134,7 +138,11 @@ function addPipeline(cdkScope: Construct) {
       version: "0.2",
       phases: {
         install: {
-          commands: ["yarn workspaces focus app"],
+          commands: [
+            "yarn set version latest",
+            "yarn plugin import workspace-tools",
+            "yarn workspaces focus app",
+          ],
         },
         build: {
           commands: [
