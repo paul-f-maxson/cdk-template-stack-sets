@@ -6,7 +6,9 @@ import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
 import {
   BuildSpec,
+  Cache,
   LinuxBuildImage,
+  LocalCacheMode,
   Project,
   Source,
 } from "aws-cdk-lib/aws-codebuild";
@@ -83,7 +85,7 @@ function addPipeline(cdkScope: Construct) {
             ],
           },
           pre_build: {
-            commands: ["yarn workspaces focus pipeline"],
+            commands: ["yarn install"],
           },
           build: {
             commands: [
@@ -110,6 +112,7 @@ function addPipeline(cdkScope: Construct) {
       environment: {
         buildImage: LinuxBuildImage.STANDARD_7_0,
       },
+      cache: Cache.local(LocalCacheMode.SOURCE),
     }
   );
 
@@ -148,7 +151,7 @@ function addPipeline(cdkScope: Construct) {
           ],
         },
         pre_build: {
-          commands: ["yarn workspaces focus app"],
+          commands: ["yarn install"],
         },
         build: {
           commands: [
