@@ -85,10 +85,7 @@ function addPipeline(cdkScope: Construct) {
             ],
           },
           pre_build: {
-            commands: [
-              "yarn plugin import workspace-tools",
-              "yarn workspaces focus pipeline",
-            ],
+            commands: ["yarn workspaces focus pipeline"],
           },
           build: {
             commands: [
@@ -154,10 +151,7 @@ function addPipeline(cdkScope: Construct) {
           ],
         },
         pre_build: {
-          commands: [
-            "yarn plugin import workspace-tools",
-            "yarn workspaces focus app",
-          ],
+          commands: ["yarn workspaces focus app"],
         },
         build: {
           commands: [
