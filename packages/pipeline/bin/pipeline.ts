@@ -116,10 +116,10 @@ function addPipeline(cdkScope: Construct) {
               ,
             ],
           },
-          artifacts: {
-            "base-directory": "packages/pipeline/cdk.out",
-            files: "**/*",
-          },
+        },
+        artifacts: {
+          "base-directory": "packages/pipeline/cdk.out",
+          files: "**/*",
         },
       }),
       environment: {
@@ -163,7 +163,7 @@ function addPipeline(cdkScope: Construct) {
           },
           build: {
             commands: [
-              "yarn workspace pipeline run cdk -a . deploy --require-approval=never --verbose",
+              "yarn workspace pipeline run cdk deploy --require-approval=never --verbose",
             ],
           },
         },
@@ -255,6 +255,63 @@ function addPipeline(cdkScope: Construct) {
     ],
   });
 
+  // Upload Assets Stage
+
+  const appTemplateDir = "packages/app/cdk.out";
+  const appTemplateFilename = "Stack.template.json";
+  const appAssetsFilename = "Stack.assets.json";
+
+  const uploadAssets = new Project(
+    cdkScope,
+    "UploadAssetsProject",
+    {
+      source: appSource,
+      description: "Uploads cdk app assets",
+      buildSpec: BuildSpec.fromObject({
+        version: "0.2",
+        phases: {
+          install: {
+            "runtime-versions": { nodejs: "18.x" },
+            commands: [
+              "corepack enable",
+              "corepack prepare yarn@stable --activate",
+            ],
+          },
+          pre_build: {
+            commands: ["yarn workspaces focus app"],
+          },
+          build: {
+            commands: [
+              "yarn workspace app run cdk-assets publish " +
+                /**
+                 * Increase logging verbosity
+                 */
+                "--verbose --verbose " +
+                /**
+                 * The path to load the assets from
+                 */
+                `--path ${appTemplateDir}/${appAssetsFilename}`,
+            ],
+          },
+        },
+      }),
+      environment: {
+        buildImage: LinuxBuildImage.STANDARD_7_0,
+      },
+    }
+  );
+
+  pipeline.addStage({
+    stageName: "UploadAssets",
+    actions: [
+      new CodeBuildAction({
+        actionName: "UploadAsset",
+        project: uploadAssets,
+        input: appArtifact,
+      }),
+    ],
+  });
+
   // Deploy Stage
 
   pipeline.addStage({
@@ -264,7 +321,7 @@ function addPipeline(cdkScope: Construct) {
         stackSetName: "AppStackSet",
         actionName: "UpdateStackSet",
         template: StackSetTemplate.fromArtifactPath(
-          appArtifact.atPath("Stack.template.json")
+          appArtifact.atPath(appTemplateFilename)
         ),
       }),
     ],
