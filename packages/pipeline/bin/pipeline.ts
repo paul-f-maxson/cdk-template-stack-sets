@@ -86,8 +86,18 @@ function addPipeline(cdkScope: Construct) {
     "DeployStackSet"
   );
 
+  addStackSet(deployStage);
+
+  pipeline.addStage(deployStage);
+
+  new cdk.CfnOutput(cdkScope, "SourceCodeRepoCloneUrlGrc", {
+    value: sourceCodeRepo.repositoryCloneUrlGrc,
+  });
+}
+
+function addStackSet(cdkScope: cdk.Stage) {
   const appStackSetStack = new StackSetStack(
-    deployStage,
+    cdkScope,
     "AppStackSetStack"
   );
 
@@ -113,15 +123,15 @@ function addPipeline(cdkScope: Construct) {
     })
   );
 
-  new StackSet(deployStage, "StackSet", {
+  new StackSet(cdkScope, "StackSet", {
     target: StackSetTarget.fromAccounts({
       accounts: [
-        deployStage.node.tryGetContext(
+        cdkScope.node.tryGetContext(
           "@pipeline/testingAccount"
         ),
       ],
       regions: [
-        deployStage.node.tryGetContext(
+        cdkScope.node.tryGetContext(
           "@pipeline/testingRegion"
         ),
       ],
@@ -132,11 +142,5 @@ function addPipeline(cdkScope: Construct) {
     deploymentType: DeploymentType.selfManaged({
       adminRole: stackSetAdminRole,
     }),
-  });
-
-  pipeline.addStage(deployStage);
-
-  new cdk.CfnOutput(cdkScope, "SourceCodeRepoCloneUrlGrc", {
-    value: sourceCodeRepo.repositoryCloneUrlGrc,
   });
 }
