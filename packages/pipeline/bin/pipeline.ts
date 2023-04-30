@@ -50,7 +50,7 @@ function addPipeline(cdkScope: Construct) {
       ),
       installCommands: [
         "corepack enable",
-        "corepack prepare yarn@3 --activate",
+        "corepack prepare yarn@3.5.0 --activate",
         "yarn workspaces focus pipeline",
       ],
       commands: [
@@ -62,7 +62,7 @@ function addPipeline(cdkScope: Construct) {
       partialBuildSpec: BuildSpec.fromObject({
         phases: {
           install: {
-            "runtime-versions": { nodejs: "18.x" },
+            "runtime-versions": { nodejs: "18" },
           },
         },
       }),
@@ -76,7 +76,7 @@ function addPipeline(cdkScope: Construct) {
 
   const deployStage = new cdk.Stage(
     cdkScope,
-    "DeployStackSetStage"
+    "DeployStackSet"
   );
 
   const appStack = new cdk.Stack(deployStage, "AppStack");
