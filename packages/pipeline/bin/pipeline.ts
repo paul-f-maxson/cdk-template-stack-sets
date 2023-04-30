@@ -89,7 +89,7 @@ function withPipeline(cdkScope: cdk.Stack) {
   );
 
   const { appStackSetStack } = withStackSet(
-    new cdk.Stack(deployStage, "", {
+    new cdk.Stack(deployStage, "AppParentStack", {
       env: {
         account: cdkScope.account,
         region: cdkScope.region,
