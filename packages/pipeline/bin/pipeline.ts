@@ -104,7 +104,7 @@ function addStackSet(cdkScope: cdk.Stage) {
   addApp(appStackSetStack);
 
   const stackSetAdminRole = new Role(
-    appStackSetStack,
+    cdkScope,
     "AdminRole",
     {
       assumedBy: new ServicePrincipal(
