@@ -91,8 +91,8 @@ function withPipeline(cdkScope: cdk.Stack) {
   const { appStackSetStack } = withStackSet(
     new cdk.Stack(deployStage, "AppParentStack", {
       env: {
-        account: cdkScope.account,
-        region: cdkScope.region,
+        account: cdk.Aws.ACCOUNT_ID,
+        region: cdk.Aws.REGION,
       },
     })
   );
@@ -137,13 +137,13 @@ function withStackSet(cdkScope: cdk.Stack) {
       accounts: [
         StringParameter.valueFromLookup(
           cdkScope,
-          "/pipeline/testingDeployAccountId"
+          "/pipeline/testing-deploy/account-id"
         ),
       ],
       regions: [
         StringParameter.valueFromLookup(
           cdkScope,
-          "/pipeline/testingDeployRegion"
+          "/pipeline/testing-deploy/region"
         ),
       ],
     }),
