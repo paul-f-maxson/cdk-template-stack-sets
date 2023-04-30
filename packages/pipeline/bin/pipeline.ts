@@ -34,6 +34,7 @@ import {
   ParameterValueType,
   StringParameter,
 } from "aws-cdk-lib/aws-ssm";
+import { CfnStackSet } from "aws-cdk-lib";
 
 const app = new cdk.App();
 
@@ -130,29 +131,36 @@ function withStackSet(cdkScope: cdk.Stack) {
     })
   );
 
-  new StackSet(cdkScope, "StackSet", {
-    target: StackSetTarget.fromAccounts({
-      accounts: [
-        StringParameter.valueForTypedStringParameterV2(
-          cdkScope,
-          "/pipeline/testing-deploy/account-id",
-          ParameterValueType.STRING
-        ),
-      ],
-      regions: [
-        StringParameter.valueForTypedStringParameterV2(
-          cdkScope,
-          "/pipeline/testing-deploy/region",
-          ParameterValueType.STRING
-        ),
-      ],
-    }),
-    template: StackSetTemplate.fromStackSetStack(
+  new CfnStackSet(cdkScope, "StackSet", {
+    stackSetName: "AppStackSet",
+    templateUrl: StackSetTemplate.fromStackSetStack(
       appStackSetStack
-    ),
-    deploymentType: DeploymentType.selfManaged({
-      adminRole: stackSetAdminRole,
-    }),
+    ).templateUrl,
+    permissionModel: "SELF_MANAGED",
+    autoDeployment: {
+      enabled: false,
+    },
+    stackInstancesGroup: [
+      {
+        creationStack: [cdkScope.stackName],
+        deploymentTargets: {
+          accounts: [
+            StringParameter.valueForTypedStringParameterV2(
+              cdkScope,
+              "/pipeline/testing-deploy/account-id",
+              ParameterValueType.STRING
+            ),
+          ],
+        },
+        regions: [
+          StringParameter.valueForTypedStringParameterV2(
+            cdkScope,
+            "/pipeline/testing-deploy/region",
+            ParameterValueType.STRING
+          ),
+        ],
+      },
+    ],
   });
 
   return { appStackSetStack };
