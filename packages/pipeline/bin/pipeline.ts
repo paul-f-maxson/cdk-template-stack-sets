@@ -36,8 +36,9 @@ const app = new cdk.App();
 
 const pipelineStack = new cdk.Stack(app, "PipelineStack", {
   env: {
-    account: process.env.PIPELINE_ACCOUNT,
-    region: process.env.PIPELINE_REGION,
+    account:
+      process.env.PIPELINE_ACCOUNT ?? cdk.Aws.ACCOUNT_ID,
+    region: process.env.PIPELINE_REGION ?? cdk.Aws.REGION,
   },
 });
 
