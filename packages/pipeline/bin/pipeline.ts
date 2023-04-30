@@ -8,16 +8,16 @@ import { Repository } from "aws-cdk-lib/aws-codecommit";
 import { Construct } from "constructs";
 import {
   CodePipeline,
-  CodePipelineSource,
   ShellStep,
+  CodePipelineSource,
 } from "aws-cdk-lib/pipelines";
 import {
   BuildSpec,
   LinuxBuildImage,
 } from "aws-cdk-lib/aws-codebuild";
 import {
-  StackSet,
   StackSetStack,
+  StackSet,
   StackSetTarget,
   StackSetTemplate,
 } from "cdk-stacksets";
@@ -79,16 +79,14 @@ function addPipeline(cdkScope: Construct) {
     "DeployStackSet"
   );
 
-  const appStack = new cdk.Stack(deployStage, "AppStack");
-
-  addApp(appStack);
-
   const appStackSetStack = new StackSetStack(
-    appStack,
+    deployStage,
     "AppStackSetStack"
   );
 
-  new StackSet(appStack, "StackSet", {
+  addApp(appStackSetStack);
+
+  new StackSet(deployStage, "StackSet", {
     target: StackSetTarget.fromAccounts({
       accounts: [],
       regions: [],
