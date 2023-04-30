@@ -2043,6 +2043,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["app", [\
+        ["portal:packages/app::locator=cdk-template-stack-sets%40workspace%3A.", {\
+          "packageLocation": "./packages/app/",\
+          "packageDependencies": [\
+            ["app", "portal:packages/app::locator=cdk-template-stack-sets%40workspace%3A."],\
+            ["aws-cdk-lib", "virtual:f87a972e7ee54256c6d8f979d7f3914b32522893226eba595e4efe4ecc641a239c6d88e01eccc6f32db30829d6ac493bfc98cb406a9b0d6059ee4112c0843da9#npm:2.77.0"],\
+            ["cdk-assets", "npm:2.77.0"],\
+            ["constructs", "npm:10.2.9"],\
+            ["source-map-support", "npm:0.5.21"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
         ["workspace:packages/app", {\
           "packageLocation": "./packages/app/",\
           "packageDependencies": [\
@@ -2613,6 +2624,32 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["glob", "npm:7.2.3"],\
             ["mime", "npm:2.6.0"],\
             ["yargs", "npm:16.2.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["cdk-stacksets", [\
+        ["npm:0.0.89", {\
+          "packageLocation": "./.yarn/cache/cdk-stacksets-npm-0.0.89-c886cd7a09-013ee9a2ab.zip/node_modules/cdk-stacksets/",\
+          "packageDependencies": [\
+            ["cdk-stacksets", "npm:0.0.89"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:39d20090714d1dff3813dfd69dff39cf303000543c8903d5a8246959b8cb3a885a396cd69b5b90e8ad9db60e73a2897dac86aaf15203b69f7d33bfb74272508e#npm:0.0.89", {\
+          "packageLocation": "./.yarn/__virtual__/cdk-stacksets-virtual-8719ed7ab1/0/cache/cdk-stacksets-npm-0.0.89-c886cd7a09-013ee9a2ab.zip/node_modules/cdk-stacksets/",\
+          "packageDependencies": [\
+            ["cdk-stacksets", "virtual:39d20090714d1dff3813dfd69dff39cf303000543c8903d5a8246959b8cb3a885a396cd69b5b90e8ad9db60e73a2897dac86aaf15203b69f7d33bfb74272508e#npm:0.0.89"],\
+            ["@types/aws-cdk-lib", null],\
+            ["@types/constructs", null],\
+            ["aws-cdk-lib", "virtual:f87a972e7ee54256c6d8f979d7f3914b32522893226eba595e4efe4ecc641a239c6d88e01eccc6f32db30829d6ac493bfc98cb406a9b0d6059ee4112c0843da9#npm:2.77.0"],\
+            ["constructs", "npm:10.2.9"]\
+          ],\
+          "packagePeers": [\
+            "@types/aws-cdk-lib",\
+            "@types/constructs",\
+            "aws-cdk-lib",\
+            "constructs"\
           ],\
           "linkType": "HARD"\
         }]\
@@ -5706,8 +5743,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["pipeline", "workspace:packages/pipeline"],\
             ["@types/jest", "npm:29.5.1"],\
             ["@types/node", "npm:18.16.2"],\
+            ["app", "portal:packages/app::locator=cdk-template-stack-sets%40workspace%3A."],\
             ["aws-cdk", "npm:2.77.0"],\
             ["aws-cdk-lib", "virtual:f87a972e7ee54256c6d8f979d7f3914b32522893226eba595e4efe4ecc641a239c6d88e01eccc6f32db30829d6ac493bfc98cb406a9b0d6059ee4112c0843da9#npm:2.77.0"],\
+            ["cdk-stacksets", "virtual:39d20090714d1dff3813dfd69dff39cf303000543c8903d5a8246959b8cb3a885a396cd69b5b90e8ad9db60e73a2897dac86aaf15203b69f7d33bfb74272508e#npm:0.0.89"],\
             ["constructs", "npm:10.2.9"],\
             ["dotenv", "npm:16.0.3"],\
             ["jest", "virtual:f87a972e7ee54256c6d8f979d7f3914b32522893226eba595e4efe4ecc641a239c6d88e01eccc6f32db30829d6ac493bfc98cb406a9b0d6059ee4112c0843da9#npm:29.5.0"],\

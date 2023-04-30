@@ -23,7 +23,9 @@
     "typescript": "~5.0.4"
   },
   "dependencies": {
+    "app": "workspace:^",
     "aws-cdk-lib": "2.77.0",
+    "cdk-stacksets": "^0.0.89",
     "constructs": "^10.2.9",
     "dotenv": "^16.0.3",
     "source-map-support": "^0.5.21"

@@ -1374,6 +1374,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"app@portal:packages/app::locator=cdk-template-stack-sets%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "app@portal:packages/app::locator=cdk-template-stack-sets%40workspace%3A."
+  dependencies:
+    aws-cdk-lib: 2.77.0
+    cdk-assets: ^2.77.0
+    constructs: ^10.2.9
+    source-map-support: ^0.5.21
+  bin:
+    app: bin/app.js
+  languageName: node
+  linkType: soft
+
 "app@workspace:packages/app":
   version: 0.0.0-use.local
   resolution: "app@workspace:packages/app"
@@ -1839,6 +1852,16 @@ __metadata:
     cdk-assets: bin/cdk-assets
     docker-credential-cdk-assets: bin/docker-credential-cdk-assets
   checksum: 345ff92b3e686dc8410f2eddad58de2b28016bd6128e87a00d9ec56267eefbef245f761509d742eaf8b41e4f07b9df3bbdefc50babc65997fbcb4cfb2f86f94e
+  languageName: node
+  linkType: hard
+
+"cdk-stacksets@npm:^0.0.89":
+  version: 0.0.89
+  resolution: "cdk-stacksets@npm:0.0.89"
+  peerDependencies:
+    aws-cdk-lib: ^2.45.0
+    constructs: ^10.0.5
+  checksum: 013ee9a2ab9c9f2e521da05207ab11516ef2c4943765d4b5dc5670e236266b005896690b6a215d838fe6f97f522fe19b5f4176423af3e45129321f7f5d096d70
   languageName: node
   linkType: hard
 
@@ -4537,8 +4560,10 @@ __metadata:
   dependencies:
     "@types/jest": ^29.5.1
     "@types/node": 18.16.2
+    app: "workspace:^"
     aws-cdk: 2.77.0
     aws-cdk-lib: 2.77.0
+    cdk-stacksets: ^0.0.89
     constructs: ^10.2.9
     dotenv: ^16.0.3
     jest: ^29.5.0
