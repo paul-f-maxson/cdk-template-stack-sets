@@ -5,7 +5,6 @@ require("dotenv").config();
 import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
 import { Repository } from "aws-cdk-lib/aws-codecommit";
-import { Construct } from "constructs";
 import {
   CodePipeline,
   ShellStep,
@@ -30,15 +29,18 @@ import {
   PolicyStatement,
   Effect,
 } from "aws-cdk-lib/aws-iam";
-import { StringParameter } from "aws-cdk-lib/aws-ssm";
+import {
+  ParameterDataType,
+  ParameterValueType,
+  StringParameter,
+} from "aws-cdk-lib/aws-ssm";
 
 const app = new cdk.App();
 
 const pipelineStack = new cdk.Stack(app, "PipelineStack", {
   env: {
-    account:
-      process.env.PIPELINE_ACCOUNT ?? cdk.Aws.ACCOUNT_ID,
-    region: process.env.PIPELINE_REGION ?? cdk.Aws.REGION,
+    account: process.env.PIPELINE_ACCOUNT,
+    region: process.env.PIPELINE_REGION,
   },
 });
 
@@ -90,14 +92,7 @@ function withPipeline(cdkScope: cdk.Stack) {
   );
 
   const { appStackSetStack } = withStackSet(
-    new cdk.Stack(deployStage, "AppParentStack", {
-      env: {
-        account:
-          process.env.PIPELINE_ACCOUNT ?? cdkScope.account,
-        region:
-          process.env.PIPELINE_REGION ?? cdkScope.region,
-      },
-    })
+    new cdk.Stack(deployStage)
   );
 
   withApp(appStackSetStack);
@@ -138,15 +133,17 @@ function withStackSet(cdkScope: cdk.Stack) {
   new StackSet(cdkScope, "StackSet", {
     target: StackSetTarget.fromAccounts({
       accounts: [
-        StringParameter.valueFromLookup(
+        StringParameter.valueForTypedStringParameterV2(
           cdkScope,
-          "/pipeline/testing-deploy/account-id"
+          "/pipeline/testing-deploy/account-id",
+          ParameterValueType.STRING
         ),
       ],
       regions: [
-        StringParameter.valueFromLookup(
+        StringParameter.valueForTypedStringParameterV2(
           cdkScope,
-          "/pipeline/testing-deploy/region"
+          "/pipeline/testing-deploy/region",
+          ParameterValueType.STRING
         ),
       ],
     }),
