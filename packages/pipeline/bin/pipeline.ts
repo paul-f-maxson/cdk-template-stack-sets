@@ -20,9 +20,16 @@ import {
   StackSet,
   StackSetTarget,
   StackSetTemplate,
+  DeploymentType,
 } from "cdk-stacksets";
 
 import addApp from "app/lib/addResources";
+import {
+  Role,
+  ServicePrincipal,
+  PolicyStatement,
+  Effect,
+} from "aws-cdk-lib/aws-iam";
 
 const app = new cdk.App();
 
@@ -86,6 +93,26 @@ function addPipeline(cdkScope: Construct) {
 
   addApp(appStackSetStack);
 
+  const stackSetAdminRole = new Role(
+    appStackSetStack,
+    "AdminRole",
+    {
+      assumedBy: new ServicePrincipal(
+        "cloudformation.amazonaws.com"
+      ),
+    }
+  );
+
+  stackSetAdminRole.addToPolicy(
+    new PolicyStatement({
+      effect: Effect.ALLOW,
+      actions: ["sts:AssumeRole"],
+      resources: [
+        "arn:aws:iam::*:role/AWSCloudFormationStackSetExecutionRole",
+      ],
+    })
+  );
+
   new StackSet(deployStage, "StackSet", {
     target: StackSetTarget.fromAccounts({
       accounts: [],
@@ -94,6 +121,9 @@ function addPipeline(cdkScope: Construct) {
     template: StackSetTemplate.fromStackSetStack(
       appStackSetStack
     ),
+    deploymentType: DeploymentType.selfManaged({
+      adminRole: stackSetAdminRole,
+    }),
   });
 
   pipeline.addStage(deployStage);
