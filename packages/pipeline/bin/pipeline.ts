@@ -30,6 +30,7 @@ import {
   PolicyStatement,
   Effect,
 } from "aws-cdk-lib/aws-iam";
+import { StringParameter } from "aws-cdk-lib/aws-ssm";
 
 const app = new cdk.App();
 
@@ -129,13 +130,15 @@ function withStackSet(cdkScope: cdk.Stack) {
   new StackSet(cdkScope, "StackSet", {
     target: StackSetTarget.fromAccounts({
       accounts: [
-        cdkScope.node.tryGetContext(
-          "@pipeline/testingAccount"
+        StringParameter.valueFromLookup(
+          cdkScope,
+          "/pipeline/testingDeployAccountId"
         ),
       ],
       regions: [
-        cdkScope.node.tryGetContext(
-          "@pipeline/testingRegion"
+        StringParameter.valueFromLookup(
+          cdkScope,
+          "/pipeline/testingDeployRegion"
         ),
       ],
     }),
