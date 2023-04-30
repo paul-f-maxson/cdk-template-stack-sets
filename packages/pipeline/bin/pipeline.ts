@@ -91,8 +91,10 @@ function withPipeline(cdkScope: cdk.Stack) {
   const { appStackSetStack } = withStackSet(
     new cdk.Stack(deployStage, "AppParentStack", {
       env: {
-        account: cdk.Aws.ACCOUNT_ID,
-        region: cdk.Aws.REGION,
+        account:
+          process.env.PIPELINE_ACCOUNT ?? cdkScope.account,
+        region:
+          process.env.PIPELINE_REGION ?? cdkScope.region,
       },
     })
   );
