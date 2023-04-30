@@ -115,8 +115,16 @@ function addPipeline(cdkScope: Construct) {
 
   new StackSet(deployStage, "StackSet", {
     target: StackSetTarget.fromAccounts({
-      accounts: [],
-      regions: [],
+      accounts: [
+        deployStage.node.tryGetContext(
+          "@pipeline/testingAccount"
+        ),
+      ],
+      regions: [
+        deployStage.node.tryGetContext(
+          "@pipeline/testingRegion"
+        ),
+      ],
     }),
     template: StackSetTemplate.fromStackSetStack(
       appStackSetStack
