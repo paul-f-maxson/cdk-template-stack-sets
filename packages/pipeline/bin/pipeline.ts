@@ -23,7 +23,7 @@ import {
   DeploymentType,
 } from "cdk-stacksets";
 
-import addApp from "app/lib/addResources";
+import withApp from "app/lib/addResources";
 import {
   Role,
   ServicePrincipal,
@@ -40,9 +40,9 @@ const pipelineStack = new cdk.Stack(app, "PipelineStack", {
   },
 });
 
-addPipeline(pipelineStack);
+withPipeline(pipelineStack);
 
-function addPipeline(cdkScope: Construct) {
+function withPipeline(cdkScope: Construct) {
   const sourceCodeRepo = new Repository(
     cdkScope,
     "SourceCodeRepo",
@@ -83,10 +83,15 @@ function addPipeline(cdkScope: Construct) {
 
   const deployStage = new cdk.Stage(
     cdkScope,
-    "DeployStackSet"
+    "DeployStackSetStage",
+    { stageName: "DeployStackSet" }
   );
 
-  addStackSet(deployStage);
+  const { appStackSetStack } = withStackSet(
+    new cdk.Stack(deployStage)
+  );
+
+  withApp(appStackSetStack);
 
   pipeline.addStage(deployStage);
 
@@ -95,13 +100,11 @@ function addPipeline(cdkScope: Construct) {
   });
 }
 
-function addStackSet(cdkScope: cdk.Stage) {
+function withStackSet(cdkScope: cdk.Stack) {
   const appStackSetStack = new StackSetStack(
     cdkScope,
     "AppStackSetStack"
   );
-
-  addApp(appStackSetStack);
 
   const stackSetAdminRole = new Role(
     cdkScope,
@@ -143,4 +146,6 @@ function addStackSet(cdkScope: cdk.Stage) {
       adminRole: stackSetAdminRole,
     }),
   });
+
+  return { appStackSetStack };
 }
