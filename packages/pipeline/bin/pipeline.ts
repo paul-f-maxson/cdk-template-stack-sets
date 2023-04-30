@@ -137,9 +137,6 @@ function withStackSet(cdkScope: cdk.Stack) {
       appStackSetStack
     ).templateUrl,
     permissionModel: "SELF_MANAGED",
-    autoDeployment: {
-      enabled: false,
-    },
     stackInstancesGroup: [
       {
         creationStack: [cdkScope.stackName],
