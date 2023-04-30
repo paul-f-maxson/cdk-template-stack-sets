@@ -43,7 +43,7 @@ const pipelineStack = new cdk.Stack(app, "PipelineStack", {
 
 withPipeline(pipelineStack);
 
-function withPipeline(cdkScope: Construct) {
+function withPipeline(cdkScope: cdk.Stack) {
   const sourceCodeRepo = new Repository(
     cdkScope,
     "SourceCodeRepo",
@@ -89,7 +89,12 @@ function withPipeline(cdkScope: Construct) {
   );
 
   const { appStackSetStack } = withStackSet(
-    new cdk.Stack(deployStage)
+    new cdk.Stack(deployStage, "", {
+      env: {
+        account: cdkScope.account,
+        region: cdkScope.region,
+      },
+    })
   );
 
   withApp(appStackSetStack);
