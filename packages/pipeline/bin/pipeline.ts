@@ -115,6 +115,10 @@ function withStackSet(cdkScope: cdk.Stack) {
     cdkScope,
     "AdminRole",
     {
+      roleName:
+        "AWSCloudFormationStackSetAdministrationRole",
+      description:
+        "Permissions for all users of the administrator account to perform stack set operations in all target accounts",
       assumedBy: new ServicePrincipal(
         "cloudformation.amazonaws.com"
       ),
@@ -131,7 +135,7 @@ function withStackSet(cdkScope: cdk.Stack) {
     })
   );
 
-  new CfnStackSet(cdkScope, "StackSet", {
+  const stackSet = new CfnStackSet(cdkScope, "StackSet", {
     stackSetName: "AppStackSet",
     templateUrl: StackSetTemplate.fromStackSetStack(
       appStackSetStack
@@ -159,6 +163,9 @@ function withStackSet(cdkScope: cdk.Stack) {
       },
     ],
   });
+
+  // Stack sets needs this role to exist in order to deploy
+  stackSet.node.addDependency(stackSetAdminRole);
 
   return { appStackSetStack };
 }
