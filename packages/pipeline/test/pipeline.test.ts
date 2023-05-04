@@ -9,10 +9,10 @@ import {
 
 import { withPipeline } from "../lib/Pipeline";
 import { withOrganizationsStackSet } from "../lib/OrganizationsStackSet";
+import { withIndependentStackSet } from "../lib/IndependentStackSet";
 
 import * as assertions from "aws-cdk-lib/assertions";
 import { Construct } from "constructs";
-import { withIndependentStackSet } from "@/lib/IndependentStackSet";
 
 enum AppParameterNames {
   HELLO = "Hello",
