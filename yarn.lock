@@ -1380,7 +1380,7 @@ __metadata:
   dependencies:
     aws-cdk-lib: 2.77.0
     cdk-assets: ^2.77.0
-    constructs: ^10.2.9
+    constructs: ^10.2.11
     source-map-support: ^0.5.21
   bin:
     app: bin/app.js
@@ -2100,13 +2100,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"constructs@npm:^10.2.9":
-  version: 10.2.9
-  resolution: "constructs@npm:10.2.9"
-  checksum: 297f77b356fdcaaf7b9a1e256737d61f086500c5563d4f7bbed98503bbffac9de89d5d5899ae656f6f0db0c62003ee826e4fb5c8e7ebc3e62ccb97bc694c5546
-  languageName: node
-  linkType: hard
-
 "convert-source-map@npm:^1.6.0, convert-source-map@npm:^1.7.0":
   version: 1.9.0
   resolution: "convert-source-map@npm:1.9.0"
@@ -2248,13 +2241,6 @@ __metadata:
   dependencies:
     esutils: ^2.0.2
   checksum: fd7673ca77fe26cd5cba38d816bc72d641f500f1f9b25b83e8ce28827fe2da7ad583a8da26ab6af85f834138cf8dae9f69b0cd6ab925f52ddab1754db44d99ce
-  languageName: node
-  linkType: hard
-
-"dotenv@npm:^16.0.3":
-  version: 16.0.3
-  resolution: "dotenv@npm:16.0.3"
-  checksum: afcf03f373d7a6d62c7e9afea6328e62851d627a4e73f2e12d0a8deae1cd375892004f3021883f8aec85932cd2834b091f568ced92b4774625b321db83b827f8
   languageName: node
   linkType: hard
 
@@ -4572,7 +4558,6 @@ __metadata:
     aws-cdk-lib: 2.77.0
     cdk-stacksets: ^0.0.90
     constructs: ^10.2.11
-    dotenv: ^16.0.3
     jest: ^29.5.0
     source-map-support: ^0.5.21
     ts-jest: ^29.1.0

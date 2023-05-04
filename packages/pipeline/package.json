@@ -27,7 +27,6 @@
     "aws-cdk-lib": "2.77.0",
     "cdk-stacksets": "^0.0.90",
     "constructs": "^10.2.11",
-    "dotenv": "^16.0.3",
     "source-map-support": "^0.5.21"
   }
 }
