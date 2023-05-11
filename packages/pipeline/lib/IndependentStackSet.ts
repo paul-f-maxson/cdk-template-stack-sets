@@ -8,11 +8,11 @@ import { CfnStackSet } from "aws-cdk-lib";
 type IndependentStackSetTarget<
   ParameterKeys extends string
 > = {
-  accounts: [string];
+  accounts: string[];
   /**
    * @summary An array of aws regions for the environments where the Stack Set will be deployed
    */
-  regions: [string];
+  regions: string[];
   /**
    * @summary CFN Parameter values that will be passed to stack instances, overriding defaultParameters
    */
