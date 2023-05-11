@@ -5,8 +5,26 @@ import {
 } from "cdk-stacksets";
 import { CfnStackSet } from "aws-cdk-lib";
 
+type OrganizationsStackSetTarget<
+  ParameterKeys extends string
+> = {
+  organizationalUnitId: string;
+  /**
+   * @summary An array of aws account IDs for the environments where the Stack Set will be deployed.
+   */
+  accounts: [string];
+  /**
+   * @summary An array of aws regions for the environments where the Stack Set will be deployed
+   */
+  regions: [string];
+  /**
+   * @summary CFN Parameter values that will be passed to stack instances, overriding defaultParameters
+   */
+  parameters?: Partial<Record<ParameterKeys, string>>;
+};
+
 declare type OrganizationsStackSetProps<
-  TParameters extends Record<string, string> = never
+  ParameterKeys extends string
 > = {
   /**
    * @summary A callback that adds arbitrary resources to the Stack Set stack
@@ -16,37 +34,23 @@ declare type OrganizationsStackSetProps<
   /**
    * @summary CFN Parameter values that will be passed to stack instances. Overriden by parameters specified at the target level.
    */
-  defaultParameters: TParameters;
+  defaultParameters: Record<ParameterKeys, string>;
   /**
    * @summary Environment where stack instances will be located
    * @description Instances will be created in all regions given for all accounts given, so long as those accounts are in the specified organization.
    */
-  targets: {
-    organizationalUnitId: string;
-    /**
-     * @summary An array of aws account IDs for the environments where the Stack Set will be deployed.
-     */
-    accounts: [string];
-    /**
-     * @summary An array of aws regions for the environments where the Stack Set will be deployed
-     */
-    regions: [string];
-    /**
-     * @summary CFN Parameter values that will be passed to stack instances, overriding defaultParameters
-     */
-    parameters?: Partial<TParameters>;
-  }[];
+  targets: OrganizationsStackSetTarget<ParameterKeys>[];
 };
 
 export function withOrganizationsStackSet<
-  T extends Record<string, string> = never
+  ParameterKeys extends string
 >(
   cdkScope: cdk.Stack,
   {
     withApp,
     defaultParameters,
     targets,
-  }: OrganizationsStackSetProps<T>
+  }: OrganizationsStackSetProps<ParameterKeys>
 ) {
   const appStackSetStack = new StackSetStack(
     cdkScope,
@@ -66,13 +70,13 @@ export function withOrganizationsStackSet<
     permissionModel: "SERVICE_MANAGED",
     callAs: "DELEGATED_ADMIN",
     capabilities: ["CAPABILITY_NAMED_IAM"],
-    parameters: Object.entries(defaultParameters).map(
-      ([parameterKey, parameterValue]) => ({
-        parameterKey,
-        parameterValue,
-        creationStack: [cdkScope.stackName],
-      })
-    ),
+    parameters: Object.entries<string>(
+      defaultParameters as Record<ParameterKeys, string>
+    ).map(([parameterKey, parameterValue]) => ({
+      parameterKey,
+      parameterValue,
+      creationStack: [cdkScope.stackName],
+    })),
     autoDeployment: {
       enabled: false,
       creationStack: [cdkScope.stackName],
@@ -87,13 +91,13 @@ export function withOrganizationsStackSet<
           accounts: target.accounts,
         },
         regions: target.regions,
-        parameterOverrides: Object.entries(parameters).map(
-          ([parameterKey, parameterValue]) => ({
-            parameterKey,
-            parameterValue,
-            creationStack: [cdkScope.stackName],
-          })
-        ),
+        parameterOverrides: Object.entries<string>(
+          parameters as Record<ParameterKeys, string>
+        ).map(([parameterKey, parameterValue]) => ({
+          parameterKey,
+          parameterValue,
+          creationStack: [cdkScope.stackName],
+        })),
         creationStack: [cdkScope.stackName],
       })
     ),

@@ -14,16 +14,6 @@ import { withIndependentStackSet } from "../lib/IndependentStackSet";
 import * as assertions from "aws-cdk-lib/assertions";
 import { Construct } from "constructs";
 
-enum AppParameterNames {
-  HELLO = "Hello",
-  GOODBYE = "Goodbye",
-}
-
-type AppParameters = {
-  [AppParameterNames.HELLO]: string;
-  [AppParameterNames.GOODBYE]?: string;
-};
-
 const withApp = (cdkScope: cdk.Stack) => {
   new Construct(cdkScope, "Construct");
 };
@@ -83,12 +73,13 @@ test("Pipeline created with orgs stack set", () => {
       "AdminAppRootStack"
     );
 
-    withOrganizationsStackSet<AppParameters>(
+    withOrganizationsStackSet<"Hello" | "Goodbye">(
       adminAppRootStack,
       {
         withApp,
         defaultParameters: {
-          [AppParameterNames.HELLO]: world,
+          Hello: world,
+          Goodbye: "",
         },
         targets: [
           {
@@ -96,8 +87,7 @@ test("Pipeline created with orgs stack set", () => {
             accounts: [testingAccountId],
             regions: [testingRegion],
             parameters: {
-              [AppParameterNames.HELLO]: "DearFriend",
-              [AppParameterNames.GOODBYE]: "Universe",
+              Goodbye: "Universe",
             },
           },
         ],
@@ -161,20 +151,20 @@ test("Pipeline created with indie stack set", () => {
       "AdminAppRootStack"
     );
 
-    withIndependentStackSet<AppParameters>(
+    withIndependentStackSet<"Hello" | "Goodbye">(
       adminAppRootStack,
       {
         withApp,
         defaultParameters: {
-          [AppParameterNames.HELLO]: world,
+          Hello: world,
+          Goodbye: "",
         },
         targets: [
           {
             accounts: [testingAccountId],
             regions: [testingRegion],
             parameters: {
-              [AppParameterNames.HELLO]: "DearFriend",
-              [AppParameterNames.GOODBYE]: "Universe",
+              Goodbye: "Universe",
             },
           },
         ],
